@@ -33,10 +33,12 @@ exports.signup = async (req, res, next) => {
 
         if (req.file) {
             const match = ['image/jpeg', 'image/jpg', 'image/png']
-            if (req.file.size <= (5 * 1024 * 1024)) {
-                if (match.indexOf(req.file.mimetype) === -1)
-                    return next(new ApiError(400, "Invalid file"));
-            } else return next(new ApiError(400, "File size must be less than 5MB"));
+            if (req.file.size > (5 * 1024 * 1024))
+                return next(new ApiError(400, "File size must be less than 5MB"));
+                
+            if (match.indexOf(req.file.mimetype) === -1)
+                return next(new ApiError(400, "Invalid file"));
+
         }
 
         next();
@@ -70,17 +72,20 @@ exports.update = async (req, res, next) => {
         if (req.body.password) {
             if (!validator.isStrongPassword(req.body.password, { minLength: 10 }))
                 return next(new ApiError(400, "Weak password"));
+
             if (!req.body.confirm_password)
                 return next(new ApiError(400, "Confirm password is not empty"));
+
             if (!validator.matches(req.body.confirm_password, req.body.password))
                 return next(new ApiError(400, "Confirm password is incorrect"));
         }
         if (req.file) {
             const match = ['image/jpeg', 'image/jpg', 'image/png']
-            if (req.file.size <= (5 * 1024 * 1024)) {
-                if (match.indexOf(req.file.mimetype) === -1)
-                    return next(new ApiError(400, "Invalid file"));
-            } else return next(new ApiError(400, "File size must be less than 5MB"));
+            if (req.file.size > (5 * 1024 * 1024))
+                return next(new ApiError(400, "File size must be less than 5MB"));
+
+            if (match.indexOf(req.file.mimetype) === -1)
+                return next(new ApiError(400, "Invalid file"));
         }
 
         next();
@@ -92,11 +97,11 @@ exports.update = async (req, res, next) => {
 }
 
 exports.changePassword = async (req, res, next) => {
-    if (Object.keys(req.body).length === 0 ) {
+    if (Object.keys(req.body).length === 0) {
         return next(new ApiError(400, "Data cannot be empty"));
     }
     try {
-        if (validator.isEmpty(req.body.oldpassword)) 
+        if (validator.isEmpty(req.body.oldpassword))
             return next(new ApiError(400, "Old Password cannot be empty."));
 
         if (!validator.isEmpty(req.body.newpassword)) {
@@ -118,15 +123,15 @@ exports.changePassword = async (req, res, next) => {
 }
 
 exports.resetPassword = async (req, res, next) => {
-    if (Object.keys(req.body).length === 0 ) {
+    if (Object.keys(req.body).length === 0) {
         return next(new ApiError(400, "Data cannot be empty"));
     }
     try {
-        if (validator.isEmpty(req.body.email)) 
-            return next(new ApiError(400, "Email cannot be empty.")); 
+        if (validator.isEmpty(req.body.email))
+            return next(new ApiError(400, "Email cannot be empty."));
 
-        if (validator.isEmpty(req.body.otp)) 
-            return next(new ApiError(400, "OTP cannot be empty.")); 
+        if (validator.isEmpty(req.body.otp))
+            return next(new ApiError(400, "OTP cannot be empty."));
 
         if (!validator.isEmpty(req.body.newpassword)) {
             if (!validator.isStrongPassword(req.body.newpassword, { minLength: 10 }))

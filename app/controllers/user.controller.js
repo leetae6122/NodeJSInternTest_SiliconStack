@@ -111,7 +111,7 @@ exports.forgotPassword = async (req, res, next) => {
         if (!document) {
             return next(new ApiError(404, "OTP not found"));
         }
-        return res.send({ OTP: document.otp });
+        return res.send({ OTP: document });
     } catch (error) {
         console.log(error);
         return next(
@@ -128,7 +128,8 @@ exports.resetPassword = async (req, res, next) => {
         const user = await userService.findByEmail(req.body.email);
 
         if(listOtp.length == 0) return next(new ApiError(404, "Expired OTP"));
-        if (req.body.otp !== listOtp[0].otp) return next(new ApiError(400, "Invalid OTP"));
+        if (!(await otpService.validOtp(req.body.otp,listOtp[0].otp))) 
+            return next(new ApiError(400, "Invalid OTP"));
 
         const payload={
             password: req.body.newpassword
@@ -211,7 +212,6 @@ exports.signup = async (req, res, next) => {
     try {
         const userService = new UserService(MongoDB.client);
         if (req.file) {
-            console.log('run1');
             const avatar_image = {
                 contentType: req.file.mimetype,
                 image: req.file.buffer

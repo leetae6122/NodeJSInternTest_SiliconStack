@@ -1,4 +1,5 @@
 const OtpGenerator = require("otp-generator");
+const bcrypt = require("bcryptjs");
 
 class OtpService {
     constructor(client) {
@@ -10,7 +11,7 @@ class OtpService {
         const otp = {
             email: payload.email,
             otp: payload.otp,
-            created_date: payload.created_date,
+            created_date: new Date(),
         };
 
         Object.keys(otp).forEach(
@@ -41,20 +42,29 @@ class OtpService {
             upperCaseAlphabets: false,
             specialChars: false,
         });
-        const createOTP = this.extractOtpData({ email: email, otp: otp });
+        const salt = bcrypt.genSaltSync(10);
+        const hashOtp = bcrypt.hashSync(otp, salt);
+        
+        const createOTP = this.extractOtpData({ email: email, otp: hashOtp });
         const date = Date.now() + 59000; //59s expires
-        const result = await this.Otp.findOneAndUpdate(
+        await this.Otp.findOneAndUpdate(
             createOTP,
             {
                 $set: {
-                    created_date: new Date(),
                     expireAt: new Date(date),
                 }
             },
             { returnDocument: "after", upsert: true }
         );
 
-        return result.value;
+        return otp;
+    }
+
+    async validOtp(otp, hashOtp) {
+        return await bcrypt.compare(
+            otp,
+            hashOtp
+        );
     }
 
 }
