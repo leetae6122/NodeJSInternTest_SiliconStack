@@ -90,3 +90,58 @@ exports.update = async (req, res, next) => {
         );
     }
 }
+
+exports.changePassword = async (req, res, next) => {
+    if (Object.keys(req.body).length === 0 ) {
+        return next(new ApiError(400, "Data cannot be empty"));
+    }
+    try {
+        if (validator.isEmpty(req.body.oldpassword)) 
+            return next(new ApiError(400, "Old Password cannot be empty."));
+
+        if (!validator.isEmpty(req.body.newpassword)) {
+            if (!validator.isStrongPassword(req.body.newpassword, { minLength: 10 }))
+                return next(new ApiError(400, "Weak password"));
+        } else return next(new ApiError(400, "New Password cannot be empty."));
+
+        if (!validator.isEmpty(req.body.confirm_newpassword)) {
+            if (!validator.matches(req.body.confirm_newpassword, req.body.newpassword))
+                return next(new ApiError(400, "Confirm new password is incorrect"));
+        } else return next(new ApiError(400, "Confirm new password cannot be empty."));
+
+        next();
+    } catch (error) {
+        return next(
+            new ApiError(500, "An error occurred while logging in the account")
+        );
+    }
+}
+
+exports.resetPassword = async (req, res, next) => {
+    if (Object.keys(req.body).length === 0 ) {
+        return next(new ApiError(400, "Data cannot be empty"));
+    }
+    try {
+        if (validator.isEmpty(req.body.email)) 
+            return next(new ApiError(400, "Email cannot be empty.")); 
+
+        if (validator.isEmpty(req.body.otp)) 
+            return next(new ApiError(400, "OTP cannot be empty.")); 
+
+        if (!validator.isEmpty(req.body.newpassword)) {
+            if (!validator.isStrongPassword(req.body.newpassword, { minLength: 10 }))
+                return next(new ApiError(400, "Weak password"));
+        } else return next(new ApiError(400, "New Password cannot be empty."));
+
+        if (!validator.isEmpty(req.body.confirm_newpassword)) {
+            if (!validator.matches(req.body.confirm_newpassword, req.body.newpassword))
+                return next(new ApiError(400, "Confirm new password is incorrect"));
+        } else return next(new ApiError(400, "Confirm new password cannot be empty."));
+        next();
+    } catch (error) {
+        console.log(error);
+        return next(
+            new ApiError(500, "An error occurred while logging in the account")
+        );
+    }
+}

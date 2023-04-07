@@ -1,4 +1,5 @@
 const UserService = require("../services/user.service");
+const OtpService = require("../services/otp.service");
 const MongoDB = require("../utils/mongodb.util");
 const ApiError = require("../api-error");
 
@@ -45,13 +46,13 @@ exports.update = async (req, res, next) => {
             };
             const document = await userService.update(req.params.id, { ...req.body, ...avatar_image });
             if (!document) {
-                return new (ApiError(404, "User not found"))
+                return next(new ApiError(404, "User not found"))
             }
             return res.send({ message: "User was update successfully" });
         } else {
             const document = await userService.update(req.params.id, req.body);
             if (!document) {
-                return new (ApiError(404, "User not found"))
+                return next(new ApiError(404, "User not found"))
             }
             return res.send({ message: "User was update successfully" });
         }
@@ -73,6 +74,75 @@ exports.delete = async (req, res, next) => {
     } catch (error) {
         return next(
             new ApiError(500, `Could not delete user with id=${req.params.id}`)
+        );
+    }
+};
+
+exports.changePassword = async (req, res, next) => {
+    try {
+        const userService = new UserService(MongoDB.client);
+        const user = await userService.findById(req.params.id);
+
+        if (!user) return next(new ApiError(404, "User not found"));
+
+        if (!(await userService.validPassword(req.body.oldpassword, user.password)))
+            return next(new ApiError(404, "The old password does not match the database"));
+
+        const payload = {
+            password: req.body.newpassword
+        }
+        await userService.update(req.params.id, payload);
+
+        return res.send({ message: "User successfully changed password" });
+    } catch (error) {
+        return next(
+            new ApiError(500, `Could not change user password with id=${req.params.id}`)
+        );
+    }
+};
+
+exports.forgotPassword = async (req, res, next) => {
+    if ((req.body.email).length === 0) {
+        return next(new ApiError(400, "Email cannot be empty"));
+    }
+    try {
+        const otpService = new OtpService(MongoDB.client);
+        const document = await otpService.create(req.body.email);
+        if (!document) {
+            return next(new ApiError(404, "OTP not found"));
+        }
+        return res.send({ OTP: document.otp });
+    } catch (error) {
+        console.log(error);
+        return next(
+            new ApiError(500, `Could not create otp with email=${req.body.email}`)
+        );
+    }
+};
+
+exports.resetPassword = async (req, res, next) => {
+    try {
+        const userService = new UserService(MongoDB.client);
+        const otpService = new OtpService(MongoDB.client);
+        const listOtp = await otpService.findByEmail(req.body.email);
+        const user = await userService.findByEmail(req.body.email);
+
+        if(listOtp.length == 0) return next(new ApiError(404, "Expired OTP"));
+        if (req.body.otp !== listOtp[0].otp) return next(new ApiError(400, "Invalid OTP"));
+
+        const payload={
+            password: req.body.newpassword
+        }
+        const document = await userService.update(user._id, payload);
+        if (!document) {
+            return next(new ApiError(404, "User not found"))
+        }
+        await otpService.deleteAll(req.body.email);
+        return res.send({ message: "User has successfully reset password" });
+    } catch (error) {
+        console.log(error);
+        return next(
+            new ApiError(500, `Could not reset user password  with email=${req.body.email}`)
         );
     }
 };
@@ -171,7 +241,7 @@ exports.signup = async (req, res, next) => {
 exports.refreshToken = async (req, res, next) => {
     const jwt = require("jsonwebtoken");
     const config = require("../config");
-    
+
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) return next(
         new ApiError(401, "You're not authenticated")

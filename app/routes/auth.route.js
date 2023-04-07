@@ -10,5 +10,8 @@ router.route("/signup")
     .post(upload.single('avatar_image'), validation.signup, users.signup)
 router.route("/refresh")
     .post(users.refreshToken)
-
+router.route("/forgot_password")
+    .post(users.forgotPassword)
+router.route("/reset_password")
+    .put(validation.resetPassword, users.resetPassword)
 module.exports = router;
