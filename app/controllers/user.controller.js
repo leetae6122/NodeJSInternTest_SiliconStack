@@ -188,20 +188,7 @@ exports.logout = async (req, res, next) => {
 exports.login = async (req, res, next) => {
     try {
         const userService = new UserService(MongoDB.client);
-        if (req.user.authType != 'local') {
-            const accessToken = await userService.login(req.user, "4h");
-            const refreshToken = await userService.login(req.user, "1d");
-            res.cookie("refreshToken", refreshToken, {
-                httpOnly: true,
-                secure: false,
-                path: "/",
-                sameSite: "strict",
-            });
-            return res.send({
-                userid: req.user._id,
-                AccessToken: accessToken
-            });
-        } else {
+        if (req.body) {
             const user = await userService.findByEmail(req.body.email);
             if (!user) return next(new ApiError(404, "Wrong email"));
 
@@ -222,6 +209,19 @@ exports.login = async (req, res, next) => {
                     AccessToken: accessToken
                 });
             }
+        } else {
+            const accessToken = await userService.login(req.user, "4h");
+            const refreshToken = await userService.login(req.user, "1d");
+            res.cookie("refreshToken", refreshToken, {
+                httpOnly: true,
+                secure: false,
+                path: "/",
+                sameSite: "strict",
+            });
+            return res.send({
+                userid: req.user._id,
+                AccessToken: accessToken
+            });
         }
     } catch (error) {
         console.log(error);

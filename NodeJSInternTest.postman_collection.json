@@ -1,0 +1,569 @@
+{
+	"info": {
+		"_postman_id": "a476c12a-4a42-4193-9f92-2a81c98ebefa",
+		"name": "NodeJSInternTest",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24391508"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "LOGIN ADMIN",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"admin@gmail.com\",\r\n    \"password\": \"Admin@12345\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LOGIN USER",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"tri123@gmail.com\",\r\n    \"password\": \"Letri@12345\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "REFRESH TOKEN",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZSBEdW9uZyBUcmkiLCJpZCI6IjY0MWFjOWNmNGMyYTFkY2EzYmVlZTI1ZCIsImFkbWluIjp0cnVlLCJpYXQiOjE2Nzk1NjQ3MjgsImV4cCI6MTY3OTU3MTkyOH0.yM1GNKIHWGTLOFKntBUJ3aZIemeCOXHel7xu2YyX__I",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZSBEdW9uZyBUcmkiLCJpZCI6IjYzZTlhYzg1MTNiY2UzNWI1YTYwZjg2ZCIsImFkbWluIjpmYWxzZSwiaWF0IjoxNjc3NDk4OTI2LCJleHAiOjE2Nzc1MDI1MjZ9.0sFXHTW_IAzZFNxEPKSthQKYCvx3IrtVCdlY-bptGHw",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/auth/refresh",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"auth",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "REGISTER",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "firstname",
+									"value": "Van B",
+									"type": "text"
+								},
+								{
+									"key": "lastname",
+									"value": "Le",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "levanb@gmail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "Levanb@123",
+									"type": "text"
+								},
+								{
+									"key": "confirm_password",
+									"value": "Levanb@123",
+									"type": "text"
+								},
+								{
+									"key": "avatar_image",
+									"type": "file",
+									"src": "/D:/Project_NLN/avatar/Rapid.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/auth/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "FORGOT PASSWORD",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"leetae6122@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/auth/forgot_password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"auth",
+								"forgot_password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "RESET PASSWORD",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"tri123@gmail.com\",\r\n    \"otp\":\"193022\",\r\n    \"newpassword\":\"Letri@12345\",\r\n    \"confirm_newpassword\":\"Letri@12345\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/auth/reset_password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"auth",
+								"reset_password"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "GET A AVATAR IMAGE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZSBEdW9uZyBUcmkiLCJpZCI6IjY0MmU5MzIyNWI2NjA3NzY3NzQ0NTVlOCIsImFkbWluIjpmYWxzZSwiaWF0IjoxNjgwOTY3NzE5LCJleHAiOjE2ODA5ODIxMTl9.vxf53WsdtLJAEeZyeuzZjybCl7XAtOw--PV0mbOPR74",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/users/image/642e93225b660776774455e8",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"image",
+								"642e93225b660776774455e8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LOG OUT",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZSBEdW9uZyBUcmkiLCJpZCI6IjY0MmU5MzIyNWI2NjA3NzY3NzQ0NTVlOCIsImFkbWluIjpmYWxzZSwiaWF0IjoxNjgwOTIxNTEzLCJleHAiOjE2ODA5MzU5MTN9.7SumKJyZGnVq6sLX1zfGn6fRzBEPWkSZZNRtg09mD7Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZSBEdW9uZyBUcmkiLCJpZCI6IjYzZTlhYzg1MTNiY2UzNWI1YTYwZjg2ZCIsImFkbWluIjpmYWxzZSwiaWF0IjoxNjc4NTE1MTUwLCJleHAiOjE2Nzg1MjIzNTB9.bsjI6R1bISLVNGSHvswYkwQwJoOm7eembW_8eul840Y",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/users/logout",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET USER BY USERID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZSBEdW9uZyBUcmkiLCJpZCI6IjY0MmU5MjQxNWI2NjA3NzY3NzQ0NTU0YiIsImFkbWluIjp0cnVlLCJpYXQiOjE2ODA5NjkwNzcsImV4cCI6MTY4MDk4MzQ3N30.I-KAvW1KNZgS80niaiWlyN6apF6nkbAWpmMdfj4nAAQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZSBEdW9uZyBUcmkiLCJpZCI6IjYzZTlhYzg1MTNiY2UzNWI1YTYwZjg2ZCIsImFkbWluIjpmYWxzZSwiaWF0IjoxNjc3MzE0MTE3LCJleHAiOjE2NzczMjEzMTd9.UVOLrfbp7pxDrUZ2YPmJykyma2qEIAOJZ1A3MmJcnNQ",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/users/64316d7cc7f751c04c001729",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"64316d7cc7f751c04c001729"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET USER BY FIRSTNAME",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZSBEdW9uZyBUcmkiLCJpZCI6IjY0MmU5MjQxNWI2NjA3NzY3NzQ0NTU0YiIsImFkbWluIjp0cnVlLCJpYXQiOjE2ODA5NjkwNzcsImV4cCI6MTY4MDk4MzQ3N30.I-KAvW1KNZgS80niaiWlyN6apF6nkbAWpmMdfj4nAAQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZSBEdW9uZyBUcmkiLCJpZCI6IjYzZWNkNzQ0MGM5YTYyMGU2NTFhOWVmNCIsImFkbWluIjpmYWxzZSwiaWF0IjoxNjc2NjM2NzM1LCJleHAiOjE2NzY2NDM5MzV9.K790QqVblBe6Icd1i2a_8cLBI0VwDINRJC1S9yCPcC8",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/users/?firstname=d",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								""
+							],
+							"query": [
+								{
+									"key": "firstname",
+									"value": "d"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET ALL USERS",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZSBEdW9uZyBUcmkiLCJpZCI6IjY0MmU5MjQxNWI2NjA3NzY3NzQ0NTU0YiIsImFkbWluIjp0cnVlLCJpYXQiOjE2ODA5NjkwNzcsImV4cCI6MTY4MDk4MzQ3N30.I-KAvW1KNZgS80niaiWlyN6apF6nkbAWpmMdfj4nAAQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/users/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "CHANGE PASSWORD",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZSBEdW9uZyBUcmkiLCJpZCI6IjY0MmU5MzIyNWI2NjA3NzY3NzQ0NTVlOCIsImFkbWluIjpmYWxzZSwiaWF0IjoxNjgwODQ4NjY0LCJleHAiOjE2ODA4NjMwNjR9.kX-5fJdfJYMsONQw559qrX9q1ZfMmplSAelPYU7EWSQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"oldpassword\":\"Letri@1234\",\r\n    \"newpassword\":\"Letri@12345\",\r\n    \"confirm_newpassword\":\"Letri@12345\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users/642e93225b660776774455e8/change_password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"642e93225b660776774455e8",
+								"change_password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "UPDATE USER",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZSBEdW9uZyBUcmkiLCJpZCI6IjY0MmU5MzIyNWI2NjA3NzY3NzQ0NTVlOCIsImFkbWluIjpmYWxzZSwiaWF0IjoxNjgwNzg0MDU0LCJleHAiOjE2ODA3OTg0NTR9.16SXandvEUeGfPBMOMNrNgvkiY2hX5JZfxfyfWC_F3I",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZSBEdW9uZyBUcmkiLCJpZCI6IjYzZTlhYzg1MTNiY2UzNWI1YTYwZjg2ZCIsImFkbWluIjpmYWxzZSwiaWF0IjoxNjc4NzE0NTM5LCJleHAiOjE2Nzg3MjE3Mzl9._SsHosQEReAjbQUbE_c-cluEfeTiJZoxSsidLiNKI2w",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "firstname",
+									"value": "Duong Tri",
+									"type": "text"
+								},
+								{
+									"key": "lastname",
+									"value": "Le",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "email",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "password",
+									"value": "Abcd@12345",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "confirm_password",
+									"value": "",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "avatar_image",
+									"type": "file",
+									"src": [],
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users/642e93225b660776774455e8",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"642e93225b660776774455e8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE A USER",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZSBEdW9uZyBUcmkiLCJpZCI6IjY0MmU5MjQxNWI2NjA3NzY3NzQ0NTU0YiIsImFkbWluIjp0cnVlLCJpYXQiOjE2ODA3ODg4MjcsImV4cCI6MTY4MDgwMzIyN30.HkNsrmYLjGuJujmmQXb63DBmFqGWsgIETGFPmUgAvY0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZSBEdW9uZyBUcmkiLCJpZCI6IjYzZTg4YzdlYmEwMDM0MzljODVlZTk2OCIsImFkbWluIjpmYWxzZSwiZXhwIjoxNjc2MTkxOTA2LCJpYXQiOjE2NzYxODQ3MDZ9.ExFvAETMoeIS6cP1gqxK2JWfhHs9s9d9TSLceGVL18k",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:3000/api/users/64316cf4c7f751c04c0016b5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"64316cf4c7f751c04c0016b5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
