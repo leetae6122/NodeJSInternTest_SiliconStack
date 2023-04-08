@@ -107,13 +107,17 @@ exports.forgotPassword = async (req, res, next) => {
     }
     try {
         const otpService = new OtpService(MongoDB.client);
+        const userService = new UserService(MongoDB.client);
+        const user = await userService.findByEmail(req.body.email);
+        if (!user)
+            return next(new ApiError(404, "User not found"));
         const document = await otpService.create(req.body.email);
         if (!document) {
             return next(new ApiError(404, "OTP not found"));
         }
-        return res.send({ OTP: document });
+        const info = await otpService.sendMail(req.body.email, document);
+        return res.send({ OTP: document, ...info });
     } catch (error) {
-        console.log(error);
         return next(
             new ApiError(500, `Could not create otp with email=${req.body.email}`)
         );
@@ -127,11 +131,11 @@ exports.resetPassword = async (req, res, next) => {
         const listOtp = await otpService.findByEmail(req.body.email);
         const user = await userService.findByEmail(req.body.email);
 
-        if(listOtp.length == 0) return next(new ApiError(404, "Expired OTP"));
-        if (!(await otpService.validOtp(req.body.otp,listOtp[0].otp))) 
+        if (listOtp.length == 0) return next(new ApiError(404, "Expired OTP"));
+        if (!(await otpService.validOtp(req.body.otp, listOtp[0].otp)))
             return next(new ApiError(400, "Invalid OTP"));
 
-        const payload={
+        const payload = {
             password: req.body.newpassword
         }
         const document = await userService.update(user._id, payload);
@@ -155,6 +159,8 @@ exports.getImage = async (req, res, next) => {
         if (!user) {
             return next(new ApiError(404, "User not found"));
         }
+        if (!user.avatar_image)
+            return next(new ApiError(404, "No avatar image"));
         res.contentType(user.avatar_image.contentType);
         res.send(user.avatar_image.image.buffer)
     } catch (error) {
@@ -167,13 +173,13 @@ exports.getImage = async (req, res, next) => {
 exports.logout = async (req, res, next) => {
     try {
         const userService = new UserService(MongoDB.client);
-        await userService.logout(req.user.id);
+        await userService.logout((req.user._id).toString());
         res.clearCookie("refreshToken");
         res.send({ message: "Log Out" });
         res.end();
     } catch (error) {
         return next(
-            new ApiError(500, `Error logout user with id=${req.user.id}`)
+            new ApiError(500, `Error logout user with id=${(req.user._id).toString()}`)
         );
     }
 };
@@ -182,14 +188,9 @@ exports.logout = async (req, res, next) => {
 exports.login = async (req, res, next) => {
     try {
         const userService = new UserService(MongoDB.client);
-        const user = await userService.findByEmail(req.body.email);
-        if (!user) return next(new ApiError(404, "Wrong email"));
-
-        const validpassword = await userService.validPassword(req.body.password, user.password)
-        if (!validpassword) return next(new ApiError(404, "Wrong password"));
-        if (user && validpassword) {
-            const accessToken = await userService.login(user, "4h");
-            const refreshToken = await userService.login(user, "1d");
+        if (req.user.authType != 'local') {
+            const accessToken = await userService.login(req.user, "4h");
+            const refreshToken = await userService.login(req.user, "1d");
             res.cookie("refreshToken", refreshToken, {
                 httpOnly: true,
                 secure: false,
@@ -197,35 +198,60 @@ exports.login = async (req, res, next) => {
                 sameSite: "strict",
             });
             return res.send({
-                userid: user._id,
+                userid: req.user._id,
                 AccessToken: accessToken
             });
+        } else {
+            const user = await userService.findByEmail(req.body.email);
+            if (!user) return next(new ApiError(404, "Wrong email"));
+
+            const validpassword = await userService.validPassword(req.body.password, user.password)
+            if (!validpassword) return next(new ApiError(404, "Wrong password"));
+
+            if (user && validpassword) {
+                const accessToken = await userService.login(user, "4h");
+                const refreshToken = await userService.login(user, "1d");
+                res.cookie("refreshToken", refreshToken, {
+                    httpOnly: true,
+                    secure: false,
+                    path: "/",
+                    sameSite: "strict",
+                });
+                return res.send({
+                    userid: user._id,
+                    AccessToken: accessToken
+                });
+            }
         }
     } catch (error) {
+        console.log(error);
         return next(
             new ApiError(500, "An error occurred while logging the user")
         );
     }
 }
 
+
 exports.signup = async (req, res, next) => {
     try {
         const userService = new UserService(MongoDB.client);
+        const checkEmail = await userService.findByEmail(req.body.email);
+        if (checkEmail)
+            return next(new ApiError(400, "Email already exists"));
         if (req.file) {
             const avatar_image = {
                 contentType: req.file.mimetype,
-                image: req.file.buffer
+                image: req.file.buffer,
             };
-            const document = await userService.create({ ...req.body, ...avatar_image });
-            if (!document) {
+            const document = await userService.create({ ...req.body, authType: 'local', ...avatar_image });
+            if (!document)
                 return next(new ApiError(404, "User not found"));
-            }
+
             return res.send(document);
         } else {
-            const document = await userService.create(req.body);
-            if (!document) {
-                return next(new ApiError(404, "User not found"))
-            }
+            const document = await userService.create({ ...req.body, authType: 'local' });
+            if (!document)
+                return next(new ApiError(404, "User not found"));
 
             return res.send(document);
         }
@@ -236,7 +262,6 @@ exports.signup = async (req, res, next) => {
         );
     }
 }
-
 
 exports.refreshToken = async (req, res, next) => {
     const jwt = require("jsonwebtoken");

@@ -17,7 +17,8 @@ class UserService {
             avatar_image: {
                 contentType: payload.contentType,
                 image: payload.image
-            }
+            },
+            authType: payload.authType
         };
 
         Object.keys(user).forEach(
@@ -38,7 +39,7 @@ class UserService {
     }
 
     async findByFirstname(firstname) {
-        const cursor =  await this.User.find({
+        const cursor = await this.User.find({
             firstname: { $regex: new RegExp(firstname), $options: "i" },
         });
         return await cursor.toArray();
@@ -47,6 +48,13 @@ class UserService {
     async findByEmail(email) {
         return await this.User.findOne({
             email: { $regex: new RegExp(email) },
+        });
+    }
+
+    async findByEmailauthType(email, authType) {
+        return await this.User.findOne({
+            email: { $regex: new RegExp(email) },
+            authType: { $regex: new RegExp(authType) },
         });
     }
 
@@ -60,10 +68,17 @@ class UserService {
         const filter = {
             _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
         }
+        const salt = bcrypt.genSaltSync(10);
+        const passwordHashed = bcrypt.hashSync(payload.password, salt);
         const update = this.extractUserData(payload);
         const result = await this.User.findOneAndUpdate(
             filter,
-            { $set: update },
+            {
+                $set: {
+                    ...update,
+                    password: passwordHashed
+                }
+            },
             { returnDocument: "after" }
         );
         return result.value;
@@ -78,19 +93,33 @@ class UserService {
 
     async create(payload) {
         const user = this.extractUserData(payload);
-        const salt = bcrypt.genSaltSync(10);
-        const passwordHashed = bcrypt.hashSync(user.password, salt);
-        const result = await this.User.findOneAndUpdate(
-            user,
-            {
-                $set: {
-                    admin: false,
-                    password: passwordHashed,
-                }
-            },
-            { returnDocument: "after", upsert: true }
-        );
-        return result.value;
+        if (payload.password) {
+            const salt = bcrypt.genSaltSync(10);
+            const passwordHashed = bcrypt.hashSync(user.password, salt);
+            const result = await this.User.findOneAndUpdate(
+                user,
+                {
+                    $set: {
+                        admin: false,
+                        password: passwordHashed
+                    }
+                },
+                { returnDocument: "after", upsert: true }
+            );
+            return result.value;
+        }else{
+            const result = await this.User.findOneAndUpdate(
+                user,
+                {
+                    $set: {
+                        admin: false,
+                    }
+                },
+                { returnDocument: "after", upsert: true }
+            );
+            return result.value;
+        }
+
     }
 
     async logout(id) {
@@ -125,7 +154,7 @@ class UserService {
             expiresIn: time
         })
     }
-    
+
     async refresh(payload, time) {
         return jwt.sign({
             iss: 'Le Duong Tri',

@@ -1,10 +1,12 @@
-require ('dotenv').config()
+require('dotenv').config()
 
 const express = require("express");
+const session = require('express-session')
 const cors = require("cors");
 const ApiError = require("./app/api-error");
 
-const auth = require("./app/middlewares/auth");
+const passport = require("passport");
+require("./app/middlewares/passport");
 const usersRouter = require("./app/routes/user.route");
 const authRouter = require("./app/routes/auth.route");
 
@@ -15,6 +17,14 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(session({
+    secret: 'mysecret',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }
+}));
+
+app.use(passport.initialize());
 
 
 app.get("/", (req, res) => {
@@ -22,7 +32,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRouter);
-app.use("/api/users",auth.verifyToken ,usersRouter);
+app.use("/api/users", passport.authenticate('jwt', { session: false }), usersRouter);
 
 // handle 404 response 
 app.use((req, res, next) => {
@@ -31,8 +41,8 @@ app.use((req, res, next) => {
 
 //define error-handling middleware last, after other app.use() and routes calls 
 app.use((error, req, res, next) => {
-    return res.status(error.statusCode || 500).json({ 
-        message: error.message || "Internal Server Error", 
+    return res.status(error.statusCode || 500).json({
+        message: error.message || "Internal Server Error",
     });
 });
 

@@ -1,5 +1,14 @@
 # Json Web Token value
 JWT_Secret= yoursecretkey
+#Google OAuth
+GOOGLE_CLIENT_ID = 
+GOOGLE_CLIENT_SECRET= 
+#Facebook OAuth
+FACEBOOK_CLIENT_ID = 
+FACEBOOK_CLIENT_SECRET= 
+#NodeMailer
+MAILER_USER =
+MAILER_PASS = 
 
 PORT= 3000
 MONGODB_URI= mongodb://127.0.0.1:27017/nodejstest
