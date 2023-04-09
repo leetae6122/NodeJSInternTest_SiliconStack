@@ -188,9 +188,12 @@ exports.logout = async (req, res, next) => {
 exports.login = async (req, res, next) => {
     try {
         const userService = new UserService(MongoDB.client);
-        if (req.body) {
+        if (req.body.email && req.body.password) {
             const user = await userService.findByEmail(req.body.email);
             if (!user) return next(new ApiError(404, "Wrong email"));
+
+            if (!user.password)
+                return next(new ApiError(400, "Account is not of local type"));
 
             const validpassword = await userService.validPassword(req.body.password, user.password)
             if (!validpassword) return next(new ApiError(404, "Wrong password"));
@@ -209,22 +212,22 @@ exports.login = async (req, res, next) => {
                     AccessToken: accessToken
                 });
             }
-        } else {
-            const accessToken = await userService.login(req.user, "4h");
-            const refreshToken = await userService.login(req.user, "1d");
-            res.cookie("refreshToken", refreshToken, {
-                httpOnly: true,
-                secure: false,
-                path: "/",
-                sameSite: "strict",
-            });
-            return res.send({
-                userid: req.user._id,
-                AccessToken: accessToken
-            });
         }
+        
+        const accessToken = await userService.login(req.user, "4h");
+        const refreshToken = await userService.login(req.user, "1d");
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true,
+            secure: false,
+            path: "/",
+            sameSite: "strict",
+        });
+        return res.send({
+            userid: req.user._id,
+            AccessToken: accessToken
+        });
+
     } catch (error) {
-        console.log(error);
         return next(
             new ApiError(500, "An error occurred while logging the user")
         );
@@ -235,9 +238,28 @@ exports.login = async (req, res, next) => {
 exports.signup = async (req, res, next) => {
     try {
         const userService = new UserService(MongoDB.client);
-        const checkEmail = await userService.findByEmail(req.body.email);
-        if (checkEmail)
-            return next(new ApiError(400, "Email already exists"));
+        const user = await userService.findByEmail(req.body.email);
+        if (user) {
+            const authType = (user.authType).every(type => type == 'local');
+            if (authType)
+                return next(new ApiError(400, "Email already exists"));
+
+            await userService.addAuthType(user._id, 'local');
+            if (req.file) {
+                const document = await userService.update(user._id, { ...req.body, ...avatar_image });
+                if (!document)
+                    return next(new ApiError(404, "User not found"));
+
+                return res.send(document);
+            }
+
+            const document = await userService.update(user._id, req.body);
+            if (!document)
+                return next(new ApiError(404, "User not found"));
+
+            return res.send(document);
+        }
+
         if (req.file) {
             const avatar_image = {
                 contentType: req.file.mimetype,
@@ -248,13 +270,14 @@ exports.signup = async (req, res, next) => {
                 return next(new ApiError(404, "User not found"));
 
             return res.send(document);
-        } else {
-            const document = await userService.create({ ...req.body, authType: 'local' });
-            if (!document)
-                return next(new ApiError(404, "User not found"));
-
-            return res.send(document);
         }
+
+        const document = await userService.create({ ...req.body, authType: 'local' });
+        if (!document)
+            return next(new ApiError(404, "User not found"));
+
+        return res.send(document);
+
     } catch (error) {
         console.log(error);
         return next(

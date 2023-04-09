@@ -116,7 +116,7 @@
 							"formdata": [
 								{
 									"key": "firstname",
-									"value": "Van B",
+									"value": "Duong Tri",
 									"type": "text"
 								},
 								{
@@ -126,23 +126,24 @@
 								},
 								{
 									"key": "email",
-									"value": "levanb@gmail.com",
+									"value": "trib1910320@student.ctu.edu.vn",
 									"type": "text"
 								},
 								{
 									"key": "password",
-									"value": "Levanb@123",
+									"value": "Letri@12345",
 									"type": "text"
 								},
 								{
 									"key": "confirm_password",
-									"value": "Levanb@123",
+									"value": "Letri@12345",
 									"type": "text"
 								},
 								{
 									"key": "avatar_image",
 									"type": "file",
-									"src": "/D:/Project_NLN/avatar/Rapid.png"
+									"src": [],
+									"disabled": true
 								}
 							]
 						},
@@ -267,7 +268,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZSBEdW9uZyBUcmkiLCJpZCI6IjY0MmU5MzIyNWI2NjA3NzY3NzQ0NTVlOCIsImFkbWluIjpmYWxzZSwiaWF0IjoxNjgwOTIxNTEzLCJleHAiOjE2ODA5MzU5MTN9.7SumKJyZGnVq6sLX1zfGn6fRzBEPWkSZZNRtg09mD7Q",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZSBEdW9uZyBUcmkiLCJpZCI6IjY0MmU5MzIyNWI2NjA3NzY3NzQ0NTVlOCIsImFkbWluIjpmYWxzZSwiYXV0aFR5cGUiOlsibG9jYWwiXSwiaWF0IjoxNjgxMDEyMTM4LCJleHAiOjE2ODEwMjY1Mzh9.4AaoLmU4SF5oKE10_nSdzNJGHLxX_PC6POodD0sz7aU",
 									"type": "string"
 								}
 							]
@@ -305,7 +306,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZSBEdW9uZyBUcmkiLCJpZCI6IjY0MmU5MjQxNWI2NjA3NzY3NzQ0NTU0YiIsImFkbWluIjp0cnVlLCJpYXQiOjE2ODA5NjkwNzcsImV4cCI6MTY4MDk4MzQ3N30.I-KAvW1KNZgS80niaiWlyN6apF6nkbAWpmMdfj4nAAQ",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZSBEdW9uZyBUcmkiLCJpZCI6IjY0MmU5MjQxNWI2NjA3NzY3NzQ0NTU0YiIsImFkbWluIjp0cnVlLCJhdXRoVHlwZSI6WyJsb2NhbCJdLCJpYXQiOjE2ODEwMTE5NDMsImV4cCI6MTY4MTAyNjM0M30.bVv3HRDZjf0vY51SQiIMl2q8V7MwX7GknflTNjEwlf0",
 									"type": "string"
 								}
 							]
@@ -319,7 +320,7 @@
 							}
 						],
 						"url": {
-							"raw": "http://localhost:3000/api/users/64316d7cc7f751c04c001729",
+							"raw": "http://localhost:3000/api/users/642e93225b660776774455e8",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -328,7 +329,7 @@
 							"path": [
 								"api",
 								"users",
-								"64316d7cc7f751c04c001729"
+								"642e93225b660776774455e8"
 							]
 						}
 					},
@@ -385,7 +386,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZSBEdW9uZyBUcmkiLCJpZCI6IjY0MmU5MjQxNWI2NjA3NzY3NzQ0NTU0YiIsImFkbWluIjp0cnVlLCJpYXQiOjE2ODA5NjkwNzcsImV4cCI6MTY4MDk4MzQ3N30.I-KAvW1KNZgS80niaiWlyN6apF6nkbAWpmMdfj4nAAQ",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZSBEdW9uZyBUcmkiLCJpZCI6IjY0MmU5MzIyNWI2NjA3NzY3NzQ0NTVlOCIsImFkbWluIjpmYWxzZSwiYXV0aFR5cGUiOlsibG9jYWwiXSwiaWF0IjoxNjgxMDEyMTM4LCJleHAiOjE2ODEwMjY1Mzh9.4AaoLmU4SF5oKE10_nSdzNJGHLxX_PC6POodD0sz7aU",
 									"type": "string"
 								}
 							]
@@ -457,7 +458,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZSBEdW9uZyBUcmkiLCJpZCI6IjY0MmU5MzIyNWI2NjA3NzY3NzQ0NTVlOCIsImFkbWluIjpmYWxzZSwiaWF0IjoxNjgwNzg0MDU0LCJleHAiOjE2ODA3OTg0NTR9.16SXandvEUeGfPBMOMNrNgvkiY2hX5JZfxfyfWC_F3I",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJMZSBEdW9uZyBUcmkiLCJpZCI6IjY0MmU5MzIyNWI2NjA3NzY3NzQ0NTVlOCIsImFkbWluIjpmYWxzZSwiYXV0aFR5cGUiOlsibG9jYWwiXSwiaWF0IjoxNjgxMDEzNDA1LCJleHAiOjE2ODEwMjc4MDV9.lyJu8CDqW508m36IBUy6hFDZ_oa_UZloEV0dxQArntg",
 									"type": "string"
 								}
 							]
@@ -475,14 +476,13 @@
 							"formdata": [
 								{
 									"key": "firstname",
-									"value": "Duong Tri",
+									"value": "Dương Trí",
 									"type": "text"
 								},
 								{
 									"key": "lastname",
-									"value": "Le",
-									"type": "text",
-									"disabled": true
+									"value": "Lê",
+									"type": "text"
 								},
 								{
 									"key": "email",

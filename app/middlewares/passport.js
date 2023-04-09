@@ -39,8 +39,14 @@ passport.use(new GoogleStrategy({
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         const userService = new UserService(MongoDB.client);
-        const user = await userService.findByEmailauthType(profile.emails[0].value,profile.provider);
-        if (user) return done(null, user);
+        const user = await userService.findByEmail(profile.emails[0].value);
+        if(user){
+            const authTypeGG = (user.authType).every(type => type == 'google');
+            if (authTypeGG) return done(null, user);
+            const newUser = await userService.addAuthType(user._id, profile.provider);
+            return done(null, newUser);
+        }
+
         const payload = {
             firstname: profile.name.givenName,
             lastname: profile.name.familyName,
@@ -63,8 +69,14 @@ passport.use(new FacebookStrategy({
 }, async (accessToken, refreshToken, profile, done) => {
     try {
         const userService = new UserService(MongoDB.client);
-        const user = await userService.findByEmailauthType(profile.emails[0].value,profile.provider);
-        if (user) return done(null, user);
+        const user = await userService.findByEmail(profile.emails[0].value);
+        if(user){
+            const authTypeFB = (user.authType).every(type => type == 'facebook');
+            if (authTypeFB) return done(null, user);
+            const newUser = await userService.addAuthType(user._id, profile.provider);
+            return done(null, newUser);
+        }
+        
         const payload = {
             firstname: profile.name.givenName,
             lastname: profile.name.familyName,

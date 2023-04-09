@@ -18,18 +18,23 @@ class UserService {
                 contentType: payload.contentType,
                 image: payload.image
             },
-            authType: payload.authType
+            authType: [payload.authType]
         };
 
         Object.keys(user).forEach(
             (key) => user[key] === undefined && delete user[key]
         );
 
+        Object.keys(user.authType).forEach(
+            (key) => user.authType[key] === undefined && delete user.authType[key]
+        );
+        if (Object.keys(user.authType).length == 0) { delete user.authType }
+
         Object.keys(user.avatar_image).forEach(
             (key) => user.avatar_image[key] === undefined && delete user.avatar_image[key]
         );
         if (Object.keys(user.avatar_image).length == 0) { delete user.avatar_image }
-
+        
         return user;
     }
 
@@ -51,13 +56,6 @@ class UserService {
         });
     }
 
-    async findByEmailauthType(email, authType) {
-        return await this.User.findOne({
-            email: { $regex: new RegExp(email) },
-            authType: { $regex: new RegExp(authType) },
-        });
-    }
-
     async findById(id) {
         return await this.User.findOne({
             _id: ObjectId.isValid(id) ? new ObjectId(id) : null
@@ -68,17 +66,27 @@ class UserService {
         const filter = {
             _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
         }
-        const salt = bcrypt.genSaltSync(10);
-        const passwordHashed = bcrypt.hashSync(payload.password, salt);
+        if (payload.password) {
+            const salt = bcrypt.genSaltSync(10);
+            const passwordHashed = bcrypt.hashSync(payload.password, salt);
+            const update = this.extractUserData(payload);
+            console.log(update);
+            const result = await this.User.findOneAndUpdate(
+                filter,
+                {
+                    $set: {
+                        ...update,
+                        password: passwordHashed
+                    }
+                },
+                { returnDocument: "after" }
+            );
+            return result.value;
+        }
         const update = this.extractUserData(payload);
         const result = await this.User.findOneAndUpdate(
             filter,
-            {
-                $set: {
-                    ...update,
-                    password: passwordHashed
-                }
-            },
+            { $set: update },
             { returnDocument: "after" }
         );
         return result.value;
@@ -107,19 +115,29 @@ class UserService {
                 { returnDocument: "after", upsert: true }
             );
             return result.value;
-        }else{
-            const result = await this.User.findOneAndUpdate(
-                user,
-                {
-                    $set: {
-                        admin: false,
-                    }
-                },
-                { returnDocument: "after", upsert: true }
-            );
-            return result.value;
         }
+        const result = await this.User.findOneAndUpdate(
+            user,
+            {
+                $set: {
+                    admin: false,
+                }
+            },
+            { returnDocument: "after", upsert: true }
+        );
+        return result.value;
+    }
 
+    async addAuthType(id, authType) {
+        const filter = {
+            _id: ObjectId.isValid(id) ? new ObjectId(id) : null,
+        }
+        const result = await this.User.findOneAndUpdate(
+            filter,
+            { $push: { authType: authType} },
+            { returnDocument: "after" }
+        );
+        return result.value;
     }
 
     async logout(id) {
@@ -149,7 +167,8 @@ class UserService {
         return jwt.sign({
             iss: 'Le Duong Tri',
             id: payload._id,
-            admin: payload.admin
+            admin: payload.admin,
+            authType: payload.authType
         }, config.JWT_Secret, {
             expiresIn: time
         })
@@ -159,7 +178,8 @@ class UserService {
         return jwt.sign({
             iss: 'Le Duong Tri',
             id: payload.id,
-            admin: payload.admin
+            admin: payload.admin,
+            authType: payload.authType
         }, config.JWT_Secret, {
             expiresIn: time
         })

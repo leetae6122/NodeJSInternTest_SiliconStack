@@ -6,7 +6,7 @@ exports.verifyAdmin = async (req, res, next) => {
         next();
     } else {
         return next(
-            new ApiError(400, "You are not allowed to access")
+            new ApiError(405, "You are not allowed to access")
         );
     }
 }
@@ -17,7 +17,7 @@ exports.verifyAdminUser = async (req, res, next) => {
         next();
     } else {
         return next(
-            new ApiError(400, "You are not allowed to access")
+            new ApiError(405, "You are not allowed to access")
         );
     }
 }
